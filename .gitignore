@@ -213,3 +213,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+.pioenvs
+.piolibdeps
+.clang_complete
+.gcc-flags.json
+
+.travis.yml
