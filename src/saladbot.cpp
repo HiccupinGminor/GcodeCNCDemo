@@ -11,14 +11,16 @@
 //------------------------------------------------------------------------------
 //#define VERBOSE              (1)  // add to get a lot more serial output.
 
-#define VERSION              (2)  // firmware version
+#define VERSION              (1)  // firmware version
 #define BAUD                 (57600)  // How fast is the Arduino talking?
 #define MAX_BUF              (64)  // What is the longest message Arduino can store?
-#define STEPS_PER_TURN       (400)  // depends on your stepper motor.  most are 200.
+#define STEPS_PER_TURN       (200)  // depends on your stepper motor.  most are 200.
 #define MIN_STEP_DELAY       (50)
 #define MAX_FEEDRATE         (1000000/MIN_STEP_DELAY)
 #define MIN_FEEDRATE         (0.01)
-#define NUM_AXIES            (4)
+#define NUM_AXES            (3)
+#define MAX_X                (1000) // mm
+#define MAX_Y                (500) // mm
 
 // for arc directions
 #define ARC_CW          (1)
@@ -53,13 +55,12 @@ typedef struct {
 //------------------------------------------------------------------------------
 // Initialize Adafruit stepper controller
 Adafruit_MotorShield AFMS0 = Adafruit_MotorShield(0x61);
-Adafruit_MotorShield AFMS1 = Adafruit_MotorShield(0x60);
 // Connect stepper motors with 400 steps per revolution (1.8 degree)
 // Create the motor shield object with the default I2C address
-Adafruit_StepperMotor *m[4];
+Adafruit_StepperMotor *m[2];
 
 
-Axis a[4];  // for line()
+Axis a[NUM_AXES];  // for line()
 Axis atemp;  // for line()
 
 
@@ -135,7 +136,15 @@ void feedrate(float nfr) {
  */
 void position(float npx,float npy,float npz,float npe) {
   // here is a good place to add sanity tests
+  if(npx > MAX_X) {
+    npx=MAX_X;
+  }
   px=npx;
+
+  if(npy > MAX_Y) {
+    npy=MAX_Y;
+  }
+
   py=npy;
   pz=npz;
   pe=npe;
@@ -291,7 +300,7 @@ void where() {
  * display helpful information
  */
 void help() {
-  Serial.print(F("GcodeCNCDemo4AxisV2 "));
+  Serial.print(F("Saladbot Arduino "));
   Serial.println(VERSION);
   Serial.println(F("Commands:"));
   Serial.println(F("G00 [X(steps)] [Y(steps)] [Z(steps)] [E(steps)] [F(feedrate)]; - line"));
@@ -411,12 +420,9 @@ void setup() {
   Serial.begin(BAUD);  // open coms
 
   AFMS0.begin(); // Start the shieldS
-  AFMS1.begin();
 
   m[0] = AFMS0.getStepper(STEPS_PER_TURN, 1);
   m[1] = AFMS0.getStepper(STEPS_PER_TURN, 2);
-  m[2] = AFMS1.getStepper(STEPS_PER_TURN, 1);
-  m[3] = AFMS1.getStepper(STEPS_PER_TURN, 2);
 
   help();  // say hello
   position(0,0,0,0);  // set staring position
