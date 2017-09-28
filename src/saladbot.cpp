@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 // CONSTANTS
 //------------------------------------------------------------------------------
-//#define VERBOSE              (1)  // add to get a lot more serial output.
+#define VERBOSE              (1)  // add to get a lot more serial output.
 
 #define VERSION              (1)  // firmware version
 #define BAUD                 (57600)  // How fast is the Arduino talking?
@@ -19,8 +19,8 @@
 #define MAX_FEEDRATE         (1000000/MIN_STEP_DELAY)
 #define MIN_FEEDRATE         (0.01)
 #define NUM_AXES            (3)
-#define MAX_X                (1000) // mm
-#define MAX_Y                (500) // mm
+#define MAX_X                (500) // mm
+#define MAX_Y                (1000) // mm
 
 // for arc directions
 #define ARC_CW          (1)
@@ -28,6 +28,8 @@
 // Arcs are split into many line segments.  How long are the segments?
 #define MM_PER_SEGMENT  (10)
 
+#define X_LIMIT_PIN   (9)
+#define Y_LIMIT_PIN   (8)
 
 //------------------------------------------------------------------------------
 // INCLUDES
@@ -35,7 +37,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-
+#include <Adafruit_PWMServoDriver.h>
 
 //------------------------------------------------------------------------------
 // STRUCTS
@@ -54,13 +56,13 @@ typedef struct {
 // GLOBALS
 //------------------------------------------------------------------------------
 // Initialize Adafruit stepper controller
-Adafruit_MotorShield AFMS0 = Adafruit_MotorShield(0x61);
+Adafruit_MotorShield AFMS0 = Adafruit_MotorShield(0x60);
 // Connect stepper motors with 400 steps per revolution (1.8 degree)
 // Create the motor shield object with the default I2C address
 Adafruit_StepperMotor *m[2];
 
 
-Axis a[NUM_AXES];  // for line()
+Axis a[4];  // for line()
 Axis atemp;  // for line()
 
 
@@ -144,7 +146,6 @@ void position(float npx,float npy,float npz,float npe) {
   if(npy > MAX_Y) {
     npy=MAX_Y;
   }
-
   py=npy;
   pz=npz;
   pe=npe;
@@ -161,6 +162,7 @@ void onestep(int motor,int direction) {
   char *letter="XYZE";
   Serial.print(letter[motor]);
 #endif
+  Serial.println(motor);
   m[motor] -> onestep(direction>0?FORWARD:BACKWARD,SINGLE);
 }
 
@@ -186,13 +188,13 @@ void line(float newx,float newy,float newz,float newe) {
 
   long i,j,maxsteps=0;
 
-  for(i=0; i<NUM_AXIES; ++i) {
+  for(i=0; i<NUM_AXES; ++i) {
     a[i].absdelta = abs(a[i].delta);
     a[i].dir = a[i].delta > 0 ? 1:-1;
     if( maxsteps < a[i].absdelta ) maxsteps = a[i].absdelta;
   }
 
-  for(i=0; i<NUM_AXIES; ++i) {
+  for(i=0; i<NUM_AXES; ++i) {
     a[i].over=maxsteps/2;
   }
 
@@ -201,7 +203,7 @@ void line(float newx,float newy,float newz,float newe) {
 #endif
 
   for(i=0; i<maxsteps; ++i) {
-    for(j=0; j<NUM_AXIES; ++j) {
+    for(j=0; j<NUM_AXES; ++j) {
       a[j].over += a[j].absdelta;
       if(a[j].over >= maxsteps) {
         a[j].over -= maxsteps;
@@ -412,6 +414,21 @@ void ready() {
   Serial.print(F(">"));  // signal ready to receive input
 }
 
+void home() {
+  while(!digitalRead(Y_LIMIT_PIN)) {
+      // Continue moving in the Y direction
+      onestep(1, BACKWARD);
+  }
+  Serial.println("Y HOME");
+  Serial.println(digitalRead(Y_LIMIT_PIN));
+
+  while(!digitalRead(X_LIMIT_PIN)) {
+      onestep(0, BACKWARD);
+  }
+  Serial.println("X HOME");
+
+  position(0,0,0,0);  // set staring position
+}
 
 /**
  * First thing this machine does on startup.  Runs only once.
@@ -425,9 +442,15 @@ void setup() {
   m[1] = AFMS0.getStepper(STEPS_PER_TURN, 2);
 
   help();  // say hello
-  position(0,0,0,0);  // set staring position
   feedrate(200);  // set default speed
   ready();
+
+  // Register end stops
+  pinMode(X_LIMIT_PIN, INPUT);
+  pinMode(Y_LIMIT_PIN, INPUT);
+
+  // Physically move home
+  home();
 }
 
 
@@ -435,7 +458,6 @@ void setup() {
  * After setup() this machine will repeat loop() forever.
  */
 void loop() {
-  // listen for serial commands
   while(Serial.available() > 0) {  // if something is available
     char c=Serial.read();  // get it
     Serial.print(c);  // repeat it back so I know you got the message
