@@ -16,11 +16,11 @@
 #define MAX_BUF              (64)  // What is the longest message Arduino can store?
 #define STEPS_PER_TURN       (200)  // depends on your stepper motor.  most are 200.
 #define MIN_STEP_DELAY       (50)
-#define MAX_FEEDRATE         (1000000/MIN_STEP_DELAY)
-#define MIN_FEEDRATE         (0.01)
+#define MAX_FEEDRATE         (1000000/MIN_STEP_DELAY) // Used as a maximum speed
+#define MIN_FEEDRATE         (0.01) // Used as a minimum speed
 #define NUM_AXES            (3)
-#define MAX_X                (500) // mm
-#define MAX_Y                (1000) // mm
+#define MAX_X                (450) // mm
+#define MAX_Y                (950) // mm
 
 // for arc directions
 #define ARC_CW          (1)
@@ -169,7 +169,7 @@ void onestep(int motor,int direction) {
 
 void release() {
   int i;
-  for(i=0; i<4; ++i) {
+  for(i=0; i<NUM_AXES; ++i) {
     m[i]->release();
   }
 }
