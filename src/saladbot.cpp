@@ -414,6 +414,9 @@ void ready() {
   Serial.print(F(">"));  // signal ready to receive input
 }
 
+/**
+  * Go to home position (0,0,...)
+  */
 void home() {
   while(!digitalRead(Y_LIMIT_PIN)) {
       // Continue moving in the Y direction
@@ -428,6 +431,8 @@ void home() {
   Serial.println("X HOME");
 
   position(0,0,0,0);  // set staring position
+  Serial.println(px);
+  Serial.println(py);
 }
 
 /**
