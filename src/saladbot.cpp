@@ -141,11 +141,11 @@ void position(float npx,float npy,float npz,float npe) {
   if(npx > MAX_X) {
     npx=MAX_X;
   }
-  px=npx;
-
   if(npy > MAX_Y) {
     npy=MAX_Y;
   }
+
+  px=npx;
   py=npy;
   pz=npz;
   pe=npe;
@@ -420,19 +420,17 @@ void ready() {
 void home() {
   while(!digitalRead(Y_LIMIT_PIN)) {
       // Continue moving in the Y direction
-      onestep(1, BACKWARD);
+      onestep(1, -1);
   }
   Serial.println("Y HOME");
   Serial.println(digitalRead(Y_LIMIT_PIN));
 
   while(!digitalRead(X_LIMIT_PIN)) {
-      onestep(0, BACKWARD);
+      onestep(0, -1);
   }
   Serial.println("X HOME");
 
   position(0,0,0,0);  // set staring position
-  Serial.println(px);
-  Serial.println(py);
 }
 
 /**
