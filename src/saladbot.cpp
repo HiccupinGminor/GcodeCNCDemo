@@ -31,7 +31,7 @@
 #define X_LIMIT_PIN   (9)
 #define Y_LIMIT_PIN   (8)
 
-#define STEPS_PER_MM  (10/3)
+#define STEPS_PER_MM  (5) // Assuming 20 tooth GT2 pulleys
 
 //------------------------------------------------------------------------------
 // INCLUDES
