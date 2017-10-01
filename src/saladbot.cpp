@@ -424,13 +424,12 @@ void home() {
       // Continue moving in the Y direction
       onestep(1, -1);
   }
-  Serial.println("Y HOME");
-  Serial.println(digitalRead(Y_LIMIT_PIN));
+  // Serial.println("Y HOME");
 
   while(!digitalRead(X_LIMIT_PIN)) {
       onestep(0, -1);
   }
-  Serial.println("X HOME");
+  // Serial.println("X HOME");
 
   position(0,0,0,0);  // set staring position
 }
@@ -470,8 +469,8 @@ void loop() {
     if(c=='\n') {
       // entire message received
       serialBuffer[sofar]=0;  // end the buffer so string functions work right
-      Serial.print(F("\r\n"));  // echo a return character for humans
       processCommand();  // do something with the command
+      Serial.print(F("OK\r\n"));  // echo a return character for humans
       ready();
     }
   }
