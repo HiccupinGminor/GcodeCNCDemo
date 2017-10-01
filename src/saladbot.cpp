@@ -31,7 +31,7 @@
 #define X_LIMIT_PIN   (9)
 #define Y_LIMIT_PIN   (8)
 
-#define STEPS_PER_MM  (10/3)
+#define STEPS_PER_MM  (5)
 
 //------------------------------------------------------------------------------
 // INCLUDES
@@ -183,10 +183,10 @@ void release() {
  * @input newy the destination y position
  **/
 void line(float newx,float newy,float newz,float newe) {
-  a[0].delta = STEPS_PER_MM * newx-px;
-  a[1].delta = STEPS_PER_MM * newy-py;
-  a[2].delta = STEPS_PER_MM * newz-pz;
-  a[3].delta = STEPS_PER_MM * newe-pe;
+  a[0].delta = STEPS_PER_MM * (newx-px);
+  a[1].delta = STEPS_PER_MM * (newy-py);
+  a[2].delta = STEPS_PER_MM * (newz-pz);
+  a[3].delta = STEPS_PER_MM * (newe-pe);
 
   long i,j,maxsteps=0;
 
