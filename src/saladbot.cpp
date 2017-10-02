@@ -368,8 +368,18 @@ void processCommand() {
   case  0:
   case  1: { // line
     feedrate(parseNumber('F',fr));
-    line( parseNumber('X',(mode_abs?px:0)) + (mode_abs?0:px),
-          parseNumber('Y',(mode_abs?py:0)) + (mode_abs?0:py),
+    int xPos = parseNumber('X',(mode_abs?px:0)) + (mode_abs?0:px);
+    int yPos = parseNumber('Y',(mode_abs?py:0)) + (mode_abs?0:py);
+
+    if(xPos > MAX_X) {
+      xPos = MAX_X;
+    }
+    if(yPos > MAX_Y) {
+      yPos = MAX_Y;
+    }
+
+    line( xPos,
+          yPos,
           parseNumber('Z',(mode_abs?pz:0)) + (mode_abs?0:pz),
           parseNumber('E',(mode_abs?pe:0)) + (mode_abs?0:pe) );
     break;
