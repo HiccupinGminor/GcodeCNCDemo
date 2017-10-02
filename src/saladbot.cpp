@@ -327,6 +327,7 @@ int correctSteps(char direction, int position) {
   if(position < 0) {
     return 0;
   }
+  return position;
 }
 
 /**
