@@ -20,7 +20,7 @@
 #define MIN_FEEDRATE         (0.01) // Used as a minimum speed
 #define NUM_AXES            (3)
 #define MAX_X                (330) // mm
-#define MAX_Y                (830) // mm
+#define MAX_Y                (840) // mm
 
 // for arc directions
 #define ARC_CW          (1)
