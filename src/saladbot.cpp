@@ -19,8 +19,8 @@
 #define MAX_FEEDRATE         (1000000/MIN_STEP_DELAY) // Used as a maximum speed
 #define MIN_FEEDRATE         (0.01) // Used as a minimum speed
 #define NUM_AXES            (3)
-#define MAX_X                (450) // mm
-#define MAX_Y                (950) // mm
+#define MAX_X                (330) // mm
+#define MAX_Y                (830) // mm
 
 // for arc directions
 #define ARC_CW          (1)
