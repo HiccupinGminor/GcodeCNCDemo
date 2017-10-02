@@ -313,7 +313,7 @@ void help() {
   Serial.println(F("All commands must end with a newline."));
 }
 
-int correctSteps(char direction, int position) {
+int correctPosition(char direction, int position) {
   int max;
   if(direction == 'X') {
     max = MAX_X;
@@ -377,8 +377,8 @@ void processCommand() {
   case  1: { // line
     feedrate(parseNumber('F',fr));
 
-    int xPos = correctSteps('X', parseNumber('X',(mode_abs?px:0)) + (mode_abs?0:px));
-    int yPos = correctSteps('Y', parseNumber('Y',(mode_abs?py:0)) + (mode_abs?0:py));
+    int xPos = correctPosition('X', parseNumber('X',(mode_abs?px:0)) + (mode_abs?0:px));
+    int yPos = correctPosition('Y', parseNumber('Y',(mode_abs?py:0)) + (mode_abs?0:py));
 
     line( xPos,
           yPos,
