@@ -140,13 +140,6 @@ void feedrate(float nfr) {
  */
 void position(float npx,float npy,float npz,float npe) {
   // here is a good place to add sanity tests
-  if(npx > MAX_X) {
-    npx=MAX_X;
-  }
-  if(npy > MAX_Y) {
-    npy=MAX_Y;
-  }
-
   px=npx;
   py=npy;
   pz=npz;
@@ -164,7 +157,6 @@ void onestep(int motor,int direction) {
   char *letter="XYZE";
   Serial.print(letter[motor]);
 #endif
-  Serial.println(motor);
   m[motor] -> onestep(direction>0?FORWARD:BACKWARD,SINGLE);
 }
 
@@ -321,7 +313,7 @@ void help() {
   Serial.println(F("All commands must end with a newline."));
 }
 
-int correctSteps(char direction, int num_steps) {
+int correctSteps(char direction, int position) {
   int max;
   if(direction == 'X') {
     max = MAX_X;
@@ -329,10 +321,10 @@ int correctSteps(char direction, int num_steps) {
   if(direction == 'Y') {
     max = MAX_Y;
   }
-  if(num_steps > max) {
+  if(position > max) {
     return max;
   }
-  if(num_steps < 0) {
+  if(position < 0) {
     return 0;
   }
 }
