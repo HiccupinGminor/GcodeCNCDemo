@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 // CONSTANTS
 //------------------------------------------------------------------------------
-#define VERBOSE              (1)  // add to get a lot more serial output.
+#define VERBOSE              (0)  // add to get a lot more serial output.
 
 #define VERSION              (1)  // firmware version
 #define BAUD                 (57600)  // How fast is the Arduino talking?
@@ -20,7 +20,7 @@
 #define MIN_FEEDRATE         (0.01) // Used as a minimum speed
 #define NUM_AXES            (3)
 #define MAX_X                (330) // mm
-#define MAX_Y                (840) // mm
+#define MAX_Y                (870) // mm
 
 // for arc directions
 #define ARC_CW          (1)
