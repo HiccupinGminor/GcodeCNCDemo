@@ -321,6 +321,21 @@ void help() {
   Serial.println(F("All commands must end with a newline."));
 }
 
+int correctSteps(char direction, int num_steps) {
+  int max;
+  if(direction == 'X') {
+    max = MAX_X;
+  }
+  if(direction == 'Y') {
+    max = MAX_Y;
+  }
+  if(num_steps > max) {
+    return max;
+  }
+  if(num_steps < 0) {
+    return 0;
+  }
+}
 
 /**
  * Read the input buffer and find any recognized commands.  One G or M command per line.
@@ -368,15 +383,9 @@ void processCommand() {
   case  0:
   case  1: { // line
     feedrate(parseNumber('F',fr));
-    int xPos = parseNumber('X',(mode_abs?px:0)) + (mode_abs?0:px);
-    int yPos = parseNumber('Y',(mode_abs?py:0)) + (mode_abs?0:py);
 
-    if(xPos > MAX_X) {
-      xPos = MAX_X;
-    }
-    if(yPos > MAX_Y) {
-      yPos = MAX_Y;
-    }
+    int xPos = correctSteps('X', parseNumber('X',(mode_abs?px:0)) + (mode_abs?0:px));
+    int yPos = correctSteps('Y', parseNumber('Y',(mode_abs?py:0)) + (mode_abs?0:py));
 
     line( xPos,
           yPos,
