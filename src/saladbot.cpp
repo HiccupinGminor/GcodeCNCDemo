@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 // CONSTANTS
 //------------------------------------------------------------------------------
-#define VERBOSE              (0)  // add to get a lot more serial output.
+// #define VERBOSE              (1)  // add to get a lot more serial output.
 
 #define VERSION              (1)  // firmware version
 #define BAUD                 (57600)  // How fast is the Arduino talking?
@@ -193,7 +193,7 @@ void line(float newx,float newy,float newz,float newe) {
   }
 
 #ifdef VERBOSE
-  Serial.println(F("Start >"));
+  Serial.println(F("START"));
 #endif
 
   for(i=0; i<maxsteps; ++i) {
@@ -208,7 +208,7 @@ void line(float newx,float newy,float newz,float newe) {
   }
 
 #ifdef VERBOSE
-  Serial.println(F("< Done."));
+  Serial.println(F("DONE"));
 #endif
   position(newx,newy,newz,newe);
 }
@@ -327,7 +327,7 @@ int correctSteps(char direction, int position) {
   if(position < 0) {
     return 0;
   }
-  return position;
+  return position
 }
 
 /**
@@ -436,12 +436,10 @@ void home() {
       // Continue moving in the Y direction
       onestep(1, -1);
   }
-  // Serial.println("Y HOME");
 
   while(!digitalRead(X_LIMIT_PIN)) {
       onestep(0, -1);
   }
-  // Serial.println("X HOME");
 
   position(0,0,0,0);  // set staring position
 }
@@ -482,7 +480,6 @@ void loop() {
       // entire message received
       serialBuffer[sofar]=0;  // end the buffer so string functions work right
       processCommand();  // do something with the command
-      Serial.print(F("OK\r\n"));  // echo a return character for humans
       ready();
     }
   }
