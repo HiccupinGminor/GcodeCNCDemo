@@ -208,7 +208,7 @@ void line(float newx,float newy,float newz,float newe) {
   }
 
 #ifdef VERBOSE
-  Serial.println(F("DONE"));
+
 #endif
   position(newx,newy,newz,newe);
 }
@@ -425,6 +425,7 @@ void processCommand() {
  */
 void ready() {
   sofar=0;  // clear input buffer
+  Serial.println("READY");
   Serial.print(F(">"));  // signal ready to receive input
 }
 
