@@ -428,7 +428,6 @@ void ready() {
   Serial.println("READY");
   Serial.print(F(">"));  // signal ready to receive input
 }
-
 /**
   * Go to home position (0,0,...)
   */
@@ -456,16 +455,16 @@ void setup() {
   m[0] = AFMS0.getStepper(STEPS_PER_TURN, 1);
   m[1] = AFMS0.getStepper(STEPS_PER_TURN, 2);
 
-  help();  // say hello
-  feedrate(200);  // set default speed
-  ready();
-
   // Register end stops
   pinMode(X_LIMIT_PIN, INPUT);
   pinMode(Y_LIMIT_PIN, INPUT);
 
   // Physically move home
   home();
+
+  help();  // say hello
+  feedrate(200);  // set default speed
+  ready();
 }
 
 
