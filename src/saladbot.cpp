@@ -318,7 +318,7 @@ void help() {
   Serial.println(F("M18; - disable motors"));
   Serial.println(F("M100; - this help message"));
   Serial.println(F("M114; - report position and feedrate"));
-  Serial.println(F("S00 [D(degrees)];"));
+  Serial.println(F("S00 [D(degrees)]; - move seeder servo"));
   Serial.println(F("All commands must end with a newline."));
 }
 
