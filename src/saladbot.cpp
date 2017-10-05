@@ -40,6 +40,7 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 #include <Adafruit_PWMServoDriver.h>
+#include <Servo.h>
 
 //------------------------------------------------------------------------------
 // STRUCTS
@@ -63,6 +64,7 @@ Adafruit_MotorShield AFMS0 = Adafruit_MotorShield(0x60);
 // Create the motor shield object with the default I2C address
 Adafruit_StepperMotor *m[2];
 
+Servo seed_servo;
 
 Axis a[4];  // for line()
 Axis atemp;  // for line()
@@ -168,6 +170,13 @@ void release() {
   }
 }
 
+/**
+ * Move the seed servo
+ */
+void moveServo(int degrees) {
+  seed_servo.write(degrees);
+  delay(20);
+}
 
 /**
  * Uses bresenham's line algorithm to move both motors
@@ -278,7 +287,6 @@ void output(char *code, float val) {
   Serial.println(val);
 }
 
-
 /**
  * print the current position, feedrate, and absolute mode.
  */
@@ -310,6 +318,7 @@ void help() {
   Serial.println(F("M18; - disable motors"));
   Serial.println(F("M100; - this help message"));
   Serial.println(F("M114; - report position and feedrate"));
+  Serial.println(F("S00 [D(degrees)];"));
   Serial.println(F("All commands must end with a newline."));
 }
 
@@ -417,6 +426,13 @@ void processCommand() {
   case 114:  where();  break;
   default:  break;
   }
+
+  cmd = parseNumber('S',-1);
+  switch(cmd) {
+    case 0: // Actuate servos
+      moveServo(parseNumber('D',0));
+    default: break;
+  }
 }
 
 
@@ -448,6 +464,8 @@ void home() {
  * First thing this machine does on startup.  Runs only once.
  */
 void setup() {
+  seed_servo.attach(10); // servo pin 1 on the Adafruit v2 shield
+
   Serial.begin(BAUD);  // open coms
 
   AFMS0.begin(); // Start the shieldS
