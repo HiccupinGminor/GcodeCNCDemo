@@ -40,7 +40,7 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 #include <Adafruit_PWMServoDriver.h>
-#include <Servo.h>
+#include <VarSpeedServo.h>
 
 //------------------------------------------------------------------------------
 // STRUCTS
@@ -64,7 +64,7 @@ Adafruit_MotorShield AFMS0 = Adafruit_MotorShield(0x60);
 // Create the motor shield object with the default I2C address
 Adafruit_StepperMotor *m[2];
 
-Servo seed_servo;
+VarSpeedServo seed_servo;
 
 Axis a[4];  // for line()
 Axis atemp;  // for line()
@@ -174,8 +174,7 @@ void release() {
  * Move the seed servo
  */
 void moveServo(int degrees) {
-  seed_servo.write(degrees);
-  delay(20);
+  seed_servo.write(degrees, 30, true);
 }
 
 /**
