@@ -342,7 +342,7 @@ int correctPosition(char direction, int position) {
 
 void runPump(int seconds) {
     digitalWrite(pump_trigger_pin, HIGH);
-    delay(seconds);
+    delay(seconds * 1000);
     digitalWrite(pump_trigger_pin, LOW);
 }
 
