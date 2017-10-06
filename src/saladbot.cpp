@@ -84,6 +84,7 @@ char mode_abs=1;  // absolute mode?
 
 long line_number=0;
 
+int pump_trigger_pin=11;
 //------------------------------------------------------------------------------
 // METHODS
 //------------------------------------------------------------------------------
@@ -318,6 +319,7 @@ void help() {
   Serial.println(F("M100; - this help message"));
   Serial.println(F("M114; - report position and feedrate"));
   Serial.println(F("S00 [D(degrees)] [F(speed)]; - move seeder servo"));
+  Serial.println(F("P00 [S(seconds)]; - activate peristaltic pump"));
   Serial.println(F("All commands must end with a newline."));
 }
 
@@ -336,6 +338,12 @@ int correctPosition(char direction, int position) {
     return 0;
   }
   return position;
+}
+
+void runPump(int seconds) {
+    digitalWrite(pump_trigger_pin, HIGH);
+    delay(seconds);
+    digitalWrite(pump_trigger_pin, LOW);
 }
 
 /**
@@ -432,6 +440,13 @@ void processCommand() {
       moveServo(parseNumber('D',0), parseNumber('F',20));
     default: break;
   }
+
+  cmd = parseNumber('P',-1);
+  switch(cmd) {
+    case 0:
+      runPump(parseNumber('S',0));
+    default: break;
+  }
 }
 
 
@@ -475,6 +490,10 @@ void setup() {
   // Register end stops
   pinMode(X_LIMIT_PIN, INPUT);
   pinMode(Y_LIMIT_PIN, INPUT);
+
+  // Register peristaltic pump trigger pin
+  pinMode(pump_trigger_pin, OUTPUT);
+  digitalWrite(pump_trigger_pin, LOW); // Ensure low state by default;
 
   // Physically move home
   home();
