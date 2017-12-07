@@ -315,11 +315,12 @@ void help() {
   Serial.println(F("G90; - absolute mode"));
   Serial.println(F("G91; - relative mode"));
   Serial.println(F("G92 [X(steps)] [Y(steps)] [Z(steps)] [E(steps)]; - change logical position"));
+  Serial.println(F("H0 - go home"));
   Serial.println(F("M18; - disable motors"));
   Serial.println(F("M100; - this help message"));
   Serial.println(F("M114; - report position and feedrate"));
-  Serial.println(F("S00 [D(degrees)] [F(speed)]; - move seeder servo"));
   Serial.println(F("P00 [S(seconds)]; - activate peristaltic pump"));
+  Serial.println(F("S00 [D(degrees)] [F(speed)]; - move seeder servo"));
   Serial.println(F("All commands must end with a newline."));
 }
 
@@ -344,6 +345,22 @@ void runPump(int seconds) {
     digitalWrite(pump_trigger_pin, HIGH);
     delay(seconds * 1000);
     digitalWrite(pump_trigger_pin, LOW);
+}
+
+/**
+  * Go to home position (0,0,...)
+  */
+void home() {
+  while(!digitalRead(Y_LIMIT_PIN)) {
+      // Continue moving in the Y direction
+      onestep(1, -1);
+  }
+
+  while(!digitalRead(X_LIMIT_PIN)) {
+      onestep(0, -1);
+  }
+
+  position(0,0,0,0);  // set staring position
 }
 
 /**
@@ -424,6 +441,13 @@ void processCommand() {
   default:  break;
   }
 
+  cmd = parseNumber('H',-1); // Home command
+  switch(cmd) {
+    default:
+      home();
+      break;
+  }
+
   cmd = parseNumber('M',-1);
   switch(cmd) {
   case 18:  // disable motors
@@ -457,21 +481,6 @@ void ready() {
   sofar=0;  // clear input buffer
   Serial.println("READY");
   Serial.print(F(">"));  // signal ready to receive input
-}
-/**
-  * Go to home position (0,0,...)
-  */
-void home() {
-  while(!digitalRead(Y_LIMIT_PIN)) {
-      // Continue moving in the Y direction
-      onestep(1, -1);
-  }
-
-  while(!digitalRead(X_LIMIT_PIN)) {
-      onestep(0, -1);
-  }
-
-  position(0,0,0,0);  // set staring position
 }
 
 /**
