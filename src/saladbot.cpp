@@ -443,9 +443,10 @@ void processCommand() {
 
   cmd = parseNumber('H',-1); // Home command
   switch(cmd) {
-    default:
+    case 0:
       home();
       break;
+    default: break;
   }
 
   cmd = parseNumber('M',-1);
